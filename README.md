@@ -4,27 +4,27 @@ This guide demonstrates how to configure **Folder Redirection** in an Active Dir
 
 ---
 ## Table of Contents:
-- **[*1. Create a Security Group](#1-create-a-security-group)**
- - [1.1 Group Name](#11-group-name)
+- **[1. Create a Security Group](#1-create-a-security-group)**
+  - [1.1 Group Name](#11-group-name)
 - **[2. Create the Shared Folder](#2-create-the-shared-folder)**
- - [2.1 Select Profile](#21-select-profile)
- - [2.2 Share Location](#22-share-location)
- - [2.3 Share Name](#23-share-name)
- - [2.4 Other Settings](#24-other-settings)
- - [2.5 Permissions](#25-other-permissions)
+  - [2.1 Select Profile](#21-select-profile)
+  - [2.2 Share Location](#22-share-location)
+  - [2.3 Share Name](#23-share-name)
+  - [2.4 Other Settings](#24-other-settings)
+  - [2.5 Permissions](#25-other-permissions)
   - [2.5.1 Remove the default permissions](#251-remove-the-default-permissions)
   - [2.5.2 Add the Security Group](#252-add-sthe-security-group)
- - [2.6 Confirmation](#26-confirmation)
- - [2.7 Verify the UNC Path](#27-verify-the-unc-path)
+  - [2.6 Confirmation](#26-confirmation)
+  - [2.7 Verify the UNC Path](#27-verify-the-unc-path)
 - **[3. Create an Organizational Unit (OU)](#3-create-an-organizational-unit-ou)**
 - **[4. Create Group Policy Object (GPO)](#4-create-group-policy-object-gpo)**
- - [4.1 Create and Link a GPO](#41-create-and-link-a-gpo)
- - [4.2 Configure Folder Redirection](#42-configure-folder-redirection)
+  - [4.1 Create and Link a GPO](#41-create-and-link-a-gpo)
+  - [4.2 Configure Folder Redirection](#42-configure-folder-redirection)
 - **[5. Assigning User for Folder Rediection](#5-assigning-user-for-folder-rediection)**
- - [5.1 Add User to the Security Group](#51-add-user-to-the-security-group)
- - [5.2 Add User to the OU](#52-add-user-to-the-ou)
-  - [5.2.1 Create new users directly inside](#521-create-new-users-directly-inside)
-  - [5.2.2 Move User to the OU](#522-move-user-to-the-ou)
+  - [5.1 Add User to the Security Group](#51-add-user-to-the-security-group)
+  - [5.2 Add User to the OU](#52-add-user-to-the-ou)
+    - [5.2.1 Create new users directly inside](#521-create-new-users-directly-inside)
+    - [5.2.2 Move User to the OU](#522-move-user-to-the-ou)
 - **[6. Apply the Policy](#6-apply-the-policy)**
 - **[7. Verify Folder Redirection](#7-verify-folder-redirection)**
 
