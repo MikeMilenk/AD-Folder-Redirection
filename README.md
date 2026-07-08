@@ -229,44 +229,76 @@ This allows Windows to restore the original folder locations if the GPO is later
 
 ---
 
-# 5. Add Users to the Security Group
+# 5. Assigning User for Folder Rediection
 
-Add users to the policy using one of the following methods:
+## 5.1 Add User to the Security Group
+This allows the user to receive permissions, access resources, or apply policies that are assigned to that group.
+You can add the user to the security group in two ways:
 
-### Create new users directly inside
-![Creating New User](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/21.png)
+**Short way:**
+```
+→ Right-click the user
+→ Add to a group
+→ enter the group name
+→ click "Check Names"
+→ OK
+```
 
-### Add users to the **Redirection Group**
+**Long way:**
+```
+→ Right-click the user
+→ Properties
+→ "Member Of" tab
+→ Add...
+→ enter the group name
+→ click "Check Names"
+→ OK
+```
+
 ![Add New User](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/21.1.png)
 
+## 5.2 Add User to the OU
 
+### 5.2.1 Create new users directly inside
 ```
-Redirect Folder OU
+→ Expand your domain
+→ Right-click the OU
+→ New
+→ User
 ```
 
-### Option 3
+![Creating New User](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/21.png)
+
+### 5.2.2 Move User to the OU
 
 Move existing users into the OU.
+```
+→ Right-click the user
+→ Move...
+→ Choose the target OU
+→ OK
+```
+
+![Moving Existing User](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/22.png)
+![Selecting OU Option](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/23.png)
 
 ---
 
-# 11. Apply the Policy
+# 6. Apply the Policy
 
 On the client computer, run:
-
 ```powershell
 gpupdate /force
 ```
 
 Optional verification:
-
 ```powershell
 gpresult /r
 ```
 
 ---
 
-# 12. Verify Folder Redirection
+# 7. Verify Folder Redirection
 
 After the user signs in, Desktop and Documents should automatically redirect to:
 
@@ -280,18 +312,6 @@ After the user signs in, Desktop and Documents should automatically redirect to:
 
 Expected behavior:
 
-* Personal folders are created automatically.
 * User data is stored on the server.
 * Files remain available through Folder Redirection.
-* Depending on Offline Files configuration, synchronization icons may appear.
-
----
-
-# Key Concepts
-
-| Feature                            | Purpose                                                                      |
-| ---------------------------------- | ---------------------------------------------------------------------------- |
-| **Access-Based Enumeration (ABE)** | Hides folders users don't have permission to access.                         |
-| **Converted NTFS Inheritance**     | Allows full manual control of permissions while preserving existing entries. |
-| **Security Group Filtering**       | Applies Folder Redirection only to selected users.                           |
-| **Folder Redirection**             | Stores user data on the server instead of the local computer.                |
+* Synchronization icons should appear on the **Desktop** and **Documents** folders
