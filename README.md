@@ -154,18 +154,21 @@ In **Active Directory Users and Computers**, create a new Organizational Unit.
 
 ![Create OU](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/14.png)
 
-**OU Name**: <RedirectFolderOU>
+**OU Name**: ```RedirectFolderOU```
 
 Using a dedicated OU simplifies testing and prevents the policy from affecting unintended users. Once OU created, it will appear in the *Active Directory Users and Computers* domain tree.
-![UNC Path](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/15.png)
+
+![Verifying OU](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/15.png)
 
 ---
 
-# 4. Create and Link a Group Policy Object (GPO)
+# 4. Group Policy Object
+
+## 4.1 Create and Link a GPO
 
 Go to **Group Policy Management**:
 ```
-→ Forests: (your domain)
+→ Forests: <your domain>
 → Domains
 → <your domain>
 → <your new OU>
@@ -173,68 +176,69 @@ Go to **Group Policy Management**:
 → Create a GPO in this domain, and Link it here...
 ```
 
-![UNC Path](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/16.png)
+![Creating GPO](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/16.png)
 
-Name the policy: ```Redirect Folder GPO```. After it is created, the new GPO will appear in the right pane of the **Group Policy Management** console.
+I named the policy: ```Redirect Folder GPO```. After it is created, the new GPO will appear in the right pane of the **Group Policy Management** console.
+
+![Renaming GPO](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/17.png)
+
+
+## 4.2 Configure Folder Redirection
+
+```
+→ Right-click on GPO
+→ Edit
+→ Redirect Folder GPO
+ → User Configuration
+  → Policies
+   → Windows Settings
+    → Folder Redirection
+     → Desktop
+     → Documents
+```
+
+**Configure ```Desktop```**
+
+![GPO Configs](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/18.png)
+
+
+**Desktop Properties > Target Tab**
+**→ Setting:** ```Basic - Redirect everyone's folder to the same location```
+**→ Target Folder Location:** ```Create a folder for each user under the root path```
+**→ Root Path:** ```\\DomainController\FolderRedirect$```
+
+![Desktop Target Tab](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/19.png)
 
 ---
 
-# 5. Configure Folder Redirection
+**Desktop Properties > Settings Tab**
 
-Navigate to:
+Do not select: ```Grant the user exclusive rights to Desktop```
+I disabled this option because I want administrators to be able to access users' redirected folders when needed. If this option is enabled, the user gets exclusive permissions, which can prevent administrators from accessing the folder without manually changing permissions.
 
-```
-User Configuration
-→ Policies
-→ Windows Settings
-→ Folder Redirection
-```
-
-Configure **Desktop** and repeat the same process for **Documents**.
-
-### Target Tab
-
-Setting:
-
-```
-Basic – Redirect everyone's folder to the same location
-```
-
-Target Folder Location:
-
-```
-Create a folder for each user under the root path
-```
-
-Root Path:
-
-```text
-\\DomainController\FolderRedirect$
-```
-
----
-
-### Settings Tab
-
-Enable:
-
-* ✅ Redirect the folder back to the local user profile location when the policy is removed
-
+**→Policy removal:** ```Redirect the folder back to the local user profile location when the policy is removed```
 This allows Windows to restore the original folder locations if the GPO is later removed.
 
+![Desktop Settings Tab](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/20.png)
+
 ---
 
-# 10. Add Users
+**Repeat the same process for ```Documents```**
+![Documents Target Tab](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/20.1.png)
+![Documents Settings Tab](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/20.2.png)
+
+---
+
+# 5. Add Users to the Security Group
 
 Add users to the policy using one of the following methods:
 
-### Option 1
+### Create new users directly inside
+![Creating New User](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/21.png)
 
-Add users to the **Redirection Group**.
+### Add users to the **Redirection Group**
+![Add New User](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/21.1.png)
 
-### Option 2
-
-Create new users directly inside:
 
 ```
 Redirect Folder OU
