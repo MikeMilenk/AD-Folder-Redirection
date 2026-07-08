@@ -10,13 +10,17 @@ Table of Contents:
 
 # 1. Create a Security Group
 
-Open **Active Directory Users and Computers** and create a new security group.
+Open **Active Directory Users and Computers** and create a new security group. This group will be used later to assign permissions to users.
+Right-click on your domain > New > Group
+![Creating Security Group](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/0.png)
 
 **Group Name**
 
 ```
 Redirection Group
 ```
+![Creating Security Group](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/1.png)
+
 
 This group will be used for **security filtering**, allowing Folder Redirection to apply only to selected users instead of everyone in the Organizational Unit (OU).
 
@@ -24,161 +28,85 @@ This group will be used for **security filtering**, allowing Folder Redirection 
 
 # 2. Create the Shared Folder
 
-Navigate to:
-
-```
-Server Manager
-→ File and Storage Services
-→ Shares
-→ Tasks
-→ New Share
-```
+Go to Server Manager and navigate to:
+→ File and Storage Services > Shares > Tasks > New Share...
+![Create New Share](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/2.png)
 
 Configure the share with the following settings:
 
-| Setting        | Value                 |
-| -------------- | --------------------- |
-| Profile        | SMB Share – Quick     |
-| Share Location | Custom Path           |
-| Folder Path    | `C:\Folder Redirect$` |
+→ **Select Profile** > SMB Share - Quick > Next
+![Select Profile](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/3.png)
 
-The **`$`** at the end of the folder name creates a **hidden network share**, preventing it from appearing during normal network browsing.
+→ **Share Location** > Type a custom path: > Browse
+![Share Location](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/4.png)
 
----
+→ Select the drive C: > New Folder > Select Folder
+  I named the shared folder **FolderRedirect$**. The **`$`** at the end of the share name makes it a **hidden network share**. It won't appear when users browse the network, but it remains accessible to anyone who knows its UNC path and has the appropriate permissions.
+![Create New Folder](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/5.png)
+![Select New Folder](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/6.png)
 
-# 3. Configure Share Settings
+→ **Share Name** – Displays both the local folder path and the network path to the shared folder.
+![Share Name](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/7.png)
 
-Use the following share name:
+→ **Other Settings** > Select Enable access-based enumeration. Caching of share is enabled by default. 
+  Access-Based Enumeration ensures users can only see folders they have permission to access.
+![Other Settings](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/8.png)
 
-```
-FolderRedirect$
-```
+→ **Permissions** > Customize Permissions... > Disable Inheritance > Convert inherited permissions into explicit permissions
+  Why did I disable inheritance? It allows me full manual control and prevents unwanted inherited permissions from parent folders.
+![Disable Inheritance](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/9.png)
 
-Copy the UNC path:
+  → *Remove the default permissions* by deleting the unnecessary **Users** entries. In my case, I removed all **Users** security principals to ensure that only explicitly assigned users and groups can access the share.
+![Remove the Default Users](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/9.1.png)
+![Apply Changes](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/9.2.png)
 
-```text
-\\DomainController\FolderRedirect$
-```
+  → *Add the Security Group*. Go to Add > Select a principal > Enter the name of the security group we created earlier (in my case, **Redirection Group**) > Check Names (to ensure group is findable and was added) > OK
+     → *Applies to:* This Folder only
+     → Select **Show advanced permissions** to display the full list of available permissions.
+       In my case, I granted **Read** permissions along with **Create folders / append data**. This allows users to create their own redirected folders while preventing them from modifying the root share. Depending on your environment and requirements, you may also choose to grant **Write** permissions. Ususally they do not require **Full Control** at the root level.
+![Add the Security Group](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/10.png)
+![Choose Permissions](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/10.1.png)
 
-Enable:
+→ **Confirmation** Verify the settings and complete share creation.
+![Confirmation](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/11.png)
+![Results](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/12.png)
 
-* ✅ Access-Based Enumeration (ABE)
-
-### Why Enable ABE?
-
-Access-Based Enumeration ensures users can only see folders they have permission to access.
-
-Example:
-
-* User **Mike** only sees:
-
-```
-\\DomainController\FolderRedirect$\Mike
-```
-
-* Other users' folders remain hidden.
-
----
-
-# 4. Configure NTFS Permissions
-
-Select **Customize Permissions**.
-
-## Disable Inheritance
-
-Choose:
-
-```
-Convert inherited permissions into explicit permissions
-```
-
-### Why?
-
-* Preserves existing permissions
-* Allows full manual control
-* Prevents unwanted inherited permissions from parent folders
-
----
-
-## Remove Default Permissions
-
-Remove unnecessary **Users** entries.
-
-### Why?
-
-This prevents all domain users from accessing the root folder unless explicitly authorized.
-
----
-
-## Add the Security Group
-
-Add:
-
-```
-Redirection Group
-```
-
-Configure permissions:
-
-* **Applies to:** This folder only
-* Permissions:
-
-  * ✅ Read
-  * ✅ List Folder / Read Data
-
-### Why?
-
-Users only need access to the root folder so Windows can automatically create their personal redirected folders.
-
-They do **not** require Full Control at the root level.
-
----
-
-# 5. Complete Share Creation
 
 Finish the wizard and verify the share appears under:
 
 ```
-Server Manager
-→ File and Storage Services
-→ Shares
+Server Manager > File and Storage Services > Shares > (Your Shared Folder)
 ```
+
+**Verify the UNC Path**
+
+Open the shared folder in File Explorer, then click the empty area of the address bar to reveal the full UNC path. Verify that it matches the path you will use for Folder Redirection. This path will be used later in the Group Policy.
+![Open UNC Path](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/13.png)
+![Verify UNC Path](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/13.1.png)
 
 ---
 
-# 6. Verify the UNC Path
-
-Open the shared folder in File Explorer and verify the UNC path:
-
-```text
-\\DomainController\FolderRedirect$
-```
-
-This path will be used later in the Group Policy.
-
----
-
-# 7. Create an Organizational Unit (OU)
+# 3. Create an Organizational Unit (OU)
 
 In **Active Directory Users and Computers**, create a new Organizational Unit.
+![Create OU](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/14.png)
 
 **OU Name**
 
 ```
-Redirect Folder OU
+RedirectFolderOU
 ```
 
-Using a dedicated OU simplifies testing and prevents the policy from affecting unintended users.
+Using a dedicated OU simplifies testing and prevents the policy from affecting unintended users. Once OU created, it will appear in the Active Directory Users and Computers domain tree.
+![UNC Path](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/15.png)
 
 ---
 
-# 8. Create and Link a Group Policy Object
+# 4. Create and Link a Group Policy Object
 
-Right-click the new OU and select:
+Go to:
+→ **Group Policy Management** > Forests: (your domain) > Domains > (your domain) > (your new OU) > Right-click the new OU > *Create a GPO in this domain, and Link it here...*
 
-```
-Create a GPO in this domain, and Link it here
-```
 
 Name the policy:
 
