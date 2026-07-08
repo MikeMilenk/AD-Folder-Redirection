@@ -15,7 +15,7 @@ Open **Active Directory Users and Computers** and create a new security group. T
 
 ![Creating Security Group](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/0.png)
 
-**Group Name**: ```Redirection Group```
+## 1.1 Group Name: ```Redirection Group```
 ![Creating Security Group](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/1.png)
 
 
@@ -36,14 +36,16 @@ Go to Server Manager and navigate to:
 
 Configure the share with the following settings:
 
-**Select Profile**
+## 2.1 Select Profile
 ```
 → SMB Share - Quick
 → Next
 ```
+
 ![Select Profile](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/3.png)
 
-**Share Location**
+
+## 2.2 Share Location
 ```
 → Type a custom path:
 → Browse
@@ -62,22 +64,26 @@ I named the shared folder ```FolderRedirect$```. The **`$`** at the end of the s
 ![Select New Folder](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/6.png)
 
 
-**Share Name**
+## 2.3 Share Name
 
 It displays both the local folder path and the network path to the shared folder
 
 ![Share Name](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/7.png)
 
-**Other Settings**
+
+## 2.4 Other Settings
+
 ```
-→ "Allow caching of share" is enabled by default.
-→ Select "Enable access-based enumeration".
+→ Select "Enable access-based enumeration"
+→ "Allow caching of share" is enabled by default
 ```
 Access-Based Enumeration ensures users can only see folders they have permission to access.
 
 ![Other Settings](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/8.png)
 
-**Permissions**
+
+## 2.5 Permissions
+
 ```
 → Customize Permissions...
 → Disable Inheritance
@@ -87,12 +93,15 @@ Why did I disable inheritance? It allows me full manual control and prevents unw
 
 ![Disable Inheritance](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/9.png)
 
-  *Remove the default permissions* by deleting the unnecessary ```Users``` entries. In my case, I removed all **Users** security principals to ensure that only explicitly assigned users and groups can access the share.
+  ### 2.5.1 Remove the default permissions
+  
+  Delete the unnecessary ```Users``` entries. In my case, I removed all **Users** security principals to ensure that only explicitly assigned users and groups can access the share.
 
 ![Remove the Default Users](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/9.1.png)
 ![Apply Changes](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/9.2.png)
 
-  *Add the Security Group*.
+  ### 2.5.2 Add the Security Group
+  
   ```
   → Add
   → Select a principal
@@ -100,6 +109,7 @@ Why did I disable inheritance? It allows me full manual control and prevents unw
   → Check Names (to ensure group is findable and was added)
   → OK
   ```
+
   Permissions Entry for ```<Security Group>```:
    
    → *Type: ```This Folder only```
@@ -111,11 +121,14 @@ In my case, I granted ```Read``` permissions along with ```Create folders / appe
 ![Add the Security Group](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/10.png)
 ![Choose Permissions](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/10.1.png)
 
-**Confirmation**
+---
+
+## 2.6 Confirmation
+
 Verify the settings and complete share creation.
+
 ![Confirmation](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/11.png)
 ![Results](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/12.png)
-
 
 Finish the wizard and verify the share appears under:
 
@@ -126,7 +139,7 @@ Finish the wizard and verify the share appears under:
 → <Your Shared Folder>
 ```
 
-**Verify the UNC Path**
+## 2.7 Verify the UNC Path
 
 Open the shared folder in File Explorer, then click the empty area of the address bar to reveal the full UNC path. Verify that it matches the path you will use for Folder Redirection. This path will be used later in the Group Policy.
 
@@ -141,7 +154,7 @@ In **Active Directory Users and Computers**, create a new Organizational Unit.
 
 ![Create OU](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/14.png)
 
-**OU Name**: ```RedirectFolderOU```
+**OU Name**: <RedirectFolderOU>
 
 Using a dedicated OU simplifies testing and prevents the policy from affecting unintended users. Once OU created, it will appear in the *Active Directory Users and Computers* domain tree.
 ![UNC Path](https://github.com/MikeMilenk/AD-Folder-Redirection/blob/0f82289443aceb63f52a304964cf521c93517d2f/Images/15.png)
