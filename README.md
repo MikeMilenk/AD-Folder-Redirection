@@ -27,6 +27,7 @@ This guide demonstrates how to configure **Folder Redirection** in an Active Dir
     - [5.2.2 Move User to the OU](#522-move-user-to-the-ou)
 - **[6. Apply the Policy](#6-apply-the-policy)**
 - **[7. Verify Folder Redirection](#7-verify-folder-redirection)**
+- **[8. Troubleshooting](#8-troubleshooting)**
 
 ---
 
@@ -338,3 +339,19 @@ Expected behavior:
 * User data is stored on the server.
 * Files remain available through Folder Redirection.
 * Synchronization icons should appear on the **Desktop** and **Documents** folders
+
+# 8. Troubleshooting
+**Folder Redirection still uses an old path**
+
+I moved a user from one Folder Redirection GPO to another and deleted the original GPO. However, the user's **Desktop** and **Documents** kept redirecting to the old network path, even though the GPO no longer existed. ```gpupdate /force``` and ```gpresult /r``` confirmed that the old GPO was no longer applied, but the redirection settings remained, likely due to cached user profile settings.
+
+Fix:
+
+Open Registry Editor:
+HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders
+Change:
+
+* Desktop → %USERPROFILE%\Desktop
+* Personal → %USERPROFILE%\Documents
+
+This removed the old redirection and restored the folders to the local profile.
